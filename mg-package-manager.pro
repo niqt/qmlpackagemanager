@@ -27,8 +27,8 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # MOBILITY +=
 
 CONFIG += link_pkgconfig
-PKGCONFIG += packagekit-qt
-QT += network
+#PKGCONFIG += packagekit
+QT += network qml quick
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \

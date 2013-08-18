@@ -21,7 +21,7 @@
  *
  */
 
-#include <QtGui/QApplication>
+#include <QGuiApplication>
 #include "qmlapplicationviewer.h"
 #include "packagemanager.h"
 #include "iconprovider.h"
