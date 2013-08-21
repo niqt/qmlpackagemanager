@@ -79,7 +79,7 @@ QString groupNames[] =
 
 PackageManager *PackageManager::m_packageManager = 0;
 
-PackageManager::PackageManager(QmlApplicationViewer *viewer, QObject *parent) :
+PackageManager::PackageManager(QQuickView *viewer, QObject *parent) :
     QObject(parent),
     m_refreshCacheTransaction(0),
     m_refreshReposTransaction(0),

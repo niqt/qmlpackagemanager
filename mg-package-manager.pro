@@ -27,7 +27,7 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # MOBILITY +=
 
 CONFIG += link_pkgconfig
-#PKGCONFIG += packagekit
+#PKGCONFIG += packagekit-qt
 QT += network qml quick
 
 # The .cpp file which was generated for your project. Feel free to hack it.
@@ -46,8 +46,8 @@ SOURCES += main.cpp \
     networktest.cpp
 
 # Please do not modify the following two lines. Required for deployment.
-include(qmlapplicationviewer/qmlapplicationviewer.pri)
-qtcAddDeployment()
+#include(qmlapplicationviewer/qmlapplicationviewer.pri)
+#qtcAddDeployment()
 
 HEADERS += \
     packagemodel.h \

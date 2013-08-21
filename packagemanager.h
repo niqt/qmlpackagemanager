@@ -24,7 +24,7 @@
 #ifndef PACKAGEMANAGER_H
 #define PACKAGEMANAGER_H
 
-#include "qmlapplicationviewer.h"
+//#include "qmlapplicationviewer.h"
 
 #include "packmancontext.h"
 #include "packagemodel.h"
@@ -34,7 +34,7 @@
 #include <QObject>
 #include <QStringList>
 #include <QPackageKit>
-#include <QDeclarativeContext>
+#include <QQmlContext>
 #include <QSortFilterProxyModel>
 
 class FilterPackageModel;
@@ -46,7 +46,7 @@ class PackageManager : public QObject
 public:
     static PackageManager *instance();
 
-    explicit PackageManager(QmlApplicationViewer *viewer, QObject *parent = 0);
+    explicit PackageManager(QQuickView *viewer, QObject *parent = 0);
 
 public slots:
     void refreshCache();

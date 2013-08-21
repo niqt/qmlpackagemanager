@@ -24,7 +24,7 @@
 #ifndef ICONPROVIDER_H
 #define ICONPROVIDER_H
 
-#include <QDeclarativeImageProvider>
+#include <QQuickImageProvider>
 
 class IconProvider : public QDeclarativeImageProvider
 {
