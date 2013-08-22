@@ -27,8 +27,10 @@ symbian:TARGET.CAPABILITY += NetworkServices
 # MOBILITY +=
 
 CONFIG += link_pkgconfig
-#PKGCONFIG += packagekit-qt
-QT += network qml quick
+#PKGCONFIG += PackageKit-Qt5
+QT += dbus network qml quick widgets
+
+INCLUDEPATH += /usr/include/PackageKit/packagekit-qt5/
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \

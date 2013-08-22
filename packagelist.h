@@ -26,7 +26,7 @@
 
 #include <QObject>
 #include <QList>
-#include <QPackageKit>
+
 
 class Package;
 

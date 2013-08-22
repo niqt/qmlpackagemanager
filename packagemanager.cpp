@@ -28,11 +28,11 @@
 
 #include "networktest.h"
 
-#include <QDeclarativeContext>
+#include <QQmlContext>
 #include <QGraphicsObject>
 #include <QSortFilterProxyModel>
 
-#include <QPackageKit>
+
 #include <QSet>
 
 

@@ -26,7 +26,7 @@
 
 #include <QAbstractListModel>
 #include <QList>
-#include <QPackageKit>
+
 
 #include "package.h"
 #include "packagemarkings.h"

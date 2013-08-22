@@ -25,7 +25,7 @@
 #define REPOSITORY_H
 
 #include <QObject>
-#include <QPackageKit>
+
 
 class Repository : public QObject
 {

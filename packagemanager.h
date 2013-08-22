@@ -33,7 +33,7 @@
 
 #include <QObject>
 #include <QStringList>
-#include <QPackageKit>
+
 #include <QQmlContext>
 #include <QSortFilterProxyModel>
 

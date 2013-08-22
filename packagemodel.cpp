@@ -26,7 +26,8 @@
 #include "packagemanager.h"
 
 #include <QHash>
-#include <QtDeclarative>
+#include <QQmlContext>
+//#include <QtDeclarative>
 
 // ------------------------------------------------------------
 

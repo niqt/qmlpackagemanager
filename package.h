@@ -25,7 +25,7 @@
 #define __PACKAGE_H
 
 #include <QObject>
-#include <QPackageKit>
+
 
 class Package : public QObject
 {

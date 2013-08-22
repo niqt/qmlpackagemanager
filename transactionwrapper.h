@@ -26,7 +26,7 @@
 
 #include <QObject>
 
-#include <QPackageKit>
+#include "transaction.h"
 
 class TransactionWrapper : public QObject
 {
