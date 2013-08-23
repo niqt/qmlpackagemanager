@@ -197,8 +197,12 @@ void PackageManager::refreshUpdate()
     m_getUpdatesTransaction = new PackageKit::Transaction(0, this);
     m_packManContext.setGetUpdatesTransaction(new TransactionWrapper(m_getUpdatesTransaction, false, this));
 
-    connect(m_getUpdatesTransaction, SIGNAL(package(QSharedPointer<PackageKit::Package>)),
-            this, SLOT(onUpdateAvailablePackage(QSharedPointer<PackageKit::Package>)));
+    /*connect(m_getUpdatesTransaction, SIGNAL(package(QSharedPointer<PackageKit::Package>)),
+            this, SLOT(onUpdateAvailablePackage(QSharedPointer<PackageKit::Package>)));*/
+
+    connect(m_getUpdatesTransaction, SIGNAL(package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)),
+                this, SLOT(onUpdateAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)));
+
     connect(m_getUpdatesTransaction, SIGNAL(repoSignatureRequired(PackageKit::Client::SignatureInfo)),
             this, SLOT(onRepoSignatureRequired(PackageKit::Client::SignatureInfo)));
     connect(m_getUpdatesTransaction, SIGNAL(finished(PackageKit::Enum::Exit,uint)), this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));

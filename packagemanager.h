@@ -64,7 +64,7 @@ public slots:
 private slots:
     void onPackage(QSharedPointer<PackageKit::Package> packagePtr);
     void onInstalledPackage(QSharedPointer<PackageKit::Package> packagePtr);
-    void onUpdateAvailablePackage(QSharedPointer<PackageKit::Package> packagePtr);
+    void onUpdateAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
     void onAvailablePackage(QSharedPointer<PackageKit::Package> packagePtr);
     void onFinished(PackageKit::Enum::Exit,uint);
 
