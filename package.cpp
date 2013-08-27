@@ -98,7 +98,7 @@ QSharedPointer<PackageKit::Package> Package::package() const
         return m_package;
 }
 
-PackageKit::Package *Package::basicInfo() const
+PackageInfo *Package::basicInfo() const
 {
     if (m_package.isNull()) {
         if (m_updatePackage.isNull())
@@ -110,7 +110,7 @@ PackageKit::Package *Package::basicInfo() const
     }
 }
 
-PackageKit::Package::Details *Package::details() const
+DetailsInfo *Package::details() const
 {
     if (m_detailsPackage.isNull()) {
         return updateDetails();
@@ -119,7 +119,7 @@ PackageKit::Package::Details *Package::details() const
     }
 }
 
-PackageKit::Package *Package::updateBasicInfo() const
+PackageInfo *Package::updateBasicInfo() const
 {
     if (m_updatePackage.isNull())
         return 0;
@@ -127,12 +127,12 @@ PackageKit::Package *Package::updateBasicInfo() const
         return m_updatePackage.data();
 }
 
-PackageKit::Package::Details *Package::updateDetails() const
+DetailsInfo *Package::updateDetails() const
 {
     if (m_updateDetailsPackage.isNull()) {
         return 0;
     } else {
-        PackageKit::Package *p = m_updateDetailsPackage.data();
+        PackageInfo *p = m_updateDetailsPackage.data();
         return p->details();
     }
 }
@@ -147,21 +147,21 @@ bool Package::isUpdateAvailable()
     return !m_updatePackage.isNull();
 }
 
-void Package::setPackage(QSharedPointer<PackageKit::Package> packagePtr)
+void Package::setPackage(QSharedPointer<PackageInfo> packagePtr)
 {
 //    qDebug() << Q_FUNC_INFO << m_name;
     m_package = packagePtr;
     emit changed();
 }
 
-void Package::setPackageDetails(QSharedPointer<PackageKit::Package> packagePtr)
+void Package::setPackageDetails(QSharedPointer<DetailsInfo> packagePtr)
 {
 //    qDebug() << Q_FUNC_INFO << m_name;
     m_detailsPackage = packagePtr;
     emit changed();
 }
 
-void Package::setUpdateDetails(QSharedPointer<PackageKit::Package> packagePtr)
+void Package::setUpdateDetails(QSharedPointer<DetailsInfo> packagePtr)
 {
 //    qDebug() << Q_FUNC_INFO << m_name;
     m_updateDetailsPackage = packagePtr;

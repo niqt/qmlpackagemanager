@@ -161,14 +161,14 @@ void PackageManager::refreshCache()
     m_packManContext.setRefreshCacheTransaction(new TransactionWrapper(m_refreshCacheTransaction, true, this));
 
     connect(m_refreshCacheTransaction, SIGNAL(changed()), this, SLOT(onChanged()));
-    connect(m_refreshCacheTransaction, SIGNAL(message(PackageKit::Enum::Message,QString)),
-            this, SLOT(onMessage(PackageKit::Enum::Message,QString)));
-    connect(m_refreshCacheTransaction, SIGNAL(repoSignatureRequired(PackageKit::Client::SignatureInfo)),
-            this, SLOT(onRepoSignatureRequired(PackageKit::Client::SignatureInfo)));
-    connect(m_refreshCacheTransaction, SIGNAL(errorCode(PackageKit::Enum::Error,QString)),
-            this, SLOT(onErrorCode(PackageKit::Enum::Error,QString)));
-    connect(m_refreshCacheTransaction, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
-            this, SLOT(onRefreshCacheFinished(PackageKit::Enum::Exit,uint)));
+    connect(m_refreshCacheTransaction, SIGNAL(message(uint type, const QString &message)),
+            this, SLOT(onMessage(message(uint type, const QString &message))));
+    connect(m_refreshCacheTransaction, SIGNAL(repoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type)),
+            this, SLOT(onRepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type)));
+    connect(m_refreshCacheTransaction, SIGNAL(errorCode(uint error, const QString &details)),
+            this, SLOT(onErrorCode(uint error, const QString &details)));
+    connect(m_refreshCacheTransaction, SIGNAL(finished(PackageKit::Transaction::Exit status, uint runtime)),
+            this, SLOT(onRefreshCacheFinished(PackageKit::Transaction::Exit status, uint runtime)));
 
     m_refreshCacheTransaction->refreshCache(true);
     m_packManContext.setSelectedGroup(PackageKit::Enum::UnknownGroup);
@@ -203,8 +203,22 @@ void PackageManager::refreshUpdate()
     connect(m_getUpdatesTransaction, SIGNAL(package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)),
                 this, SLOT(onUpdateAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)));
 
-    connect(m_getUpdatesTransaction, SIGNAL(repoSignatureRequired(PackageKit::Client::SignatureInfo)),
-            this, SLOT(onRepoSignatureRequired(PackageKit::Client::SignatureInfo)));
+    connect(m_getUpdatesTransaction, SIGNAL(repoSignatureRequired(const QString &packageID,
+                                                                  const QString &repoName,
+                                                                  const QString &keyUrl,
+                                                                  const QString &keyUserid,
+                                                                  const QString &keyId,
+                                                                  const QString &keyFingerprint,
+                                                                  const QString &keyTimestamp,
+                                                                  PackageKit::Transaction::SigType type)),
+            this, SLOT(onRepoSignatureRequired(const QString &packageID,
+                                               const QString &repoName,
+                                               const QString &keyUrl,
+                                               const QString &keyUserid,
+                                               const QString &keyId,
+                                               const QString &keyFingerprint,
+                                               const QString &keyTimestamp,
+                                               PackageKit::Transaction::SigType type)));
     connect(m_getUpdatesTransaction, SIGNAL(finished(PackageKit::Enum::Exit,uint)), this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));
     m_getUpdatesTransaction->getUpdates(); // PackageKit::Enum::FilterInstalled);
 }
@@ -218,8 +232,8 @@ void PackageManager::refreshInstalled()
     m_getPackagesTransaction = new PackageKit::Transaction(0, this);
     m_packManContext.setGetPackagesTransaction(new TransactionWrapper(m_getPackagesTransaction, false, this));
 
-    connect(m_getPackagesTransaction, SIGNAL(package(QSharedPointer<PackageKit::Package>)),
-        this, SLOT(onInstalledPackage(QSharedPointer<PackageKit::Package>)));
+    connect(m_getPackagesTransaction, SIGNAL(package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)),
+        this, SLOT(onInstalledPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)));
     connect(m_getPackagesTransaction, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
         this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));
     m_getPackagesTransaction->getPackages(PackageKit::Enum::FilterInstalled);
@@ -237,12 +251,12 @@ void PackageManager::refreshAvailable(uint group)
     PackageKit::Transaction *t = new PackageKit::Transaction(0, this);
     m_packManContext.setSearchGroupsTransaction(new TransactionWrapper(t, false, this));
 
-    connect(t, SIGNAL(package(QSharedPointer<PackageKit::Package>)),
-            this, SLOT(onAvailablePackage(QSharedPointer<PackageKit::Package>)));
+    connect(t, SIGNAL(package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)),
+            this, SLOT(onAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)));
     connect(t, SIGNAL(repoSignatureRequired(PackageKit::Client::SignatureInfo)),
             this, SLOT(onRepoSignatureRequired(PackageKit::Client::SignatureInfo)));
-    connect(t, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
-            this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));
+    connect(t, SIGNAL(finished(PackageKit::Transaction::Exit status, uint runtime)),
+            this, SLOT(onFinished(PackageKit::Transaction::Exit status, uint runtime)));
     t->searchGroups(groupNames[group]);
 }
 
@@ -256,18 +270,18 @@ void PackageManager::refreshRepos()
     m_packManContext.setRepositories(&m_repositories);
     m_packManContext.setRefreshReposTransaction(new TransactionWrapper(t, true, this));
 
-    connect(t, SIGNAL(repoDetail(QString,QString,bool)),
-            this, SLOT(onRepoDetail(QString,QString,bool)));
+    connect(t, SIGNAL(repoDetail(const QString &repoId, const QString &description, bool enabled)),
+            this, SLOT(onRepoDetail(const QString &repoId, const QString &description, bool enabled)));
 
     connect(t, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
-            this, SLOT(onRefreshReposFinished(PackageKit::Enum::Exit,uint)));
+            this, SLOT(onRefreshReposFinished(PackageKit::Transaction::Exit status, uint runtime)));
 
     m_refreshReposTransaction = t;
 
     t->getRepoList();
 }
 
-void PackageManager::onPackage(QSharedPointer<PackageKit::Package> packagePtr)
+void PackageManager::onPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)
 {
     PackageKit::Transaction *transaction = static_cast<PackageKit::Transaction*>(sender());
     PackageKit::Enum::Role role = transaction->role();
@@ -291,14 +305,14 @@ void PackageManager::onPackage(QSharedPointer<PackageKit::Package> packagePtr)
     }
 }
 
-void PackageManager::onInstalledPackage(QSharedPointer<PackageKit::Package> packagePtr)
+void PackageManager::onInstalledPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)
 {
 //    qDebug() << Q_FUNC_INFO << (*packagePtr).id()  << (*packagePtr).info();
 
     m_installedPackagesModel->addPackage(packagePtr, false);
 }
 
-void PackageManager::onUpdateAvailablePackage(QSharedPointer<PackageKit::Package> packagePtr)
+void PackageManager::onUpdateAvailablePackage(QSharedPointer<OldPackageKit::Package> packagePtr)
 {
 //    qDebug() << Q_FUNC_INFO << (*packagePtr).id()  << (*packagePtr).info();
 
@@ -319,7 +333,7 @@ void PackageManager::onAvailablePackage(QSharedPointer<PackageKit::Package> pack
         m_availablePackagesModel->addPackage(packagePtr, false);
 }
 
-void PackageManager::onFinished(PackageKit::Enum::Exit status, uint runtime)
+void PackageManager::onFinished(PackageKit::Transaction::Exit status, uint runtime)
 {
     PackageKit::Transaction *t = qobject_cast<PackageKit::Transaction*>(sender());
 
@@ -349,9 +363,9 @@ void PackageManager::onFinished(PackageKit::Enum::Exit status, uint runtime)
     }
 }
 
-void PackageManager::onRefreshCacheFinished(PackageKit::Enum::Exit exitCode, uint duration)
+void PackageManager::onRefreshCacheFinished(PackageKit::Transaction::Exit status, uint runtime)
 {
-    if (exitCode == PackageKit::Enum::ExitSuccess) {
+    if (status == PackageKit::Enum::ExitSuccess) {
         refreshUpdate();
 //        refreshInstalled();
     }
@@ -359,7 +373,7 @@ void PackageManager::onRefreshCacheFinished(PackageKit::Enum::Exit exitCode, uin
     m_refreshCacheTransaction = 0;
 }
 
-void PackageManager::onRefreshReposFinished(PackageKit::Enum::Exit, uint)
+void PackageManager::onRefreshReposFinished(PackageKit::Transaction::Exit status, uint runtime)
 {
     m_refreshReposTransaction = 0;
     m_packManContext.setRepositories(&m_repositories);
@@ -457,8 +471,8 @@ void PackageManager::installMarkedPackages(bool simulate, bool onlyTrusted)
     PackageKit::Transaction *t = new PackageKit::Transaction(0, this);
     m_packManContext.setInstallPackagesTransaction(new TransactionWrapper(t, true, this));
 
-    connect(t, SIGNAL(package(QSharedPointer<PackageKit::Package>)),
-            this, SLOT(onPackage(QSharedPointer<PackageKit::Package>)));
+    connect(t, SIGNAL(package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)),
+            this, SLOT(onPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary)));
 
     connect(t, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
             this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));
@@ -483,39 +497,41 @@ void PackageManager::onCategory(const QString &parent_id, const QString &cat_id,
 //    qDebug() << Q_FUNC_INFO << parent_id << cat_id << name << summary << icon;
 }
 
-void PackageManager::onErrorCode(PackageKit::Enum::Error error, const QString& details)
+void PackageManager::onErrorCode(uint error, const QString &details)
 {
 //    qDebug() << Q_FUNC_INFO << error << details;
 }
-
+/*
 void PackageManager::onEulaRequired(const PackageKit::Client::EulaInfo &info)
 {
     qDebug() << Q_FUNC_INFO << info.id << info.licenseAgreement << info.vendorName;
 }
-
+*/
+/*
 void PackageManager::onMediaChangeRequired(PackageKit::Enum::MediaType type, const QString& id, const QString& text)
 {
     qDebug() << Q_FUNC_INFO << type << id << text;
 }
-
+*/
+/*
 void PackageManager::onFiles(const QSharedPointer<PackageKit::Package> &packagePtr, const QStringList &filenames)
 {
     PackageKit::Package *p = packagePtr.data();
     qDebug() << Q_FUNC_INFO << p->name() << filenames;
 }
-
-void PackageManager::onMessage(PackageKit::Enum::Message type, const QString &message)
+*/
+void PackageManager::onMessage(uint type, const QString &message)
 {
     qDebug() << Q_FUNC_INFO << type << message;
 }
 
-void PackageManager::onRepoDetail(const QString& repoId, const QString& description, bool enabled)
+void PackageManager::onRepoDetail(const QString &repoId, const QString &description, bool enabled)
 {
 //    qDebug() << Q_FUNC_INFO << repoId << description << enabled;
     m_repositories << new Repository(repoId, description, enabled, this);
 }
 
-void PackageManager::onRepoSignatureRequired(const PackageKit::Client::SignatureInfo &info)
+void PackageManager::onRepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type)
 {
     PackageKit::Package *p = info.package.data();
 //    qDebug() << Q_FUNC_INFO << p->name() << info.repoId;
@@ -543,10 +559,10 @@ void PackageManager::onRepoSignatureRequired(const PackageKit::Client::Signature
     }
 
 }
-
+/*
 void PackageManager::onRequireRestart(PackageKit::Enum::Restart type, const QSharedPointer<PackageKit::Package> &packagePtr)
 {
     PackageKit::Package *p = packagePtr.data();
     qDebug() << Q_FUNC_INFO << type << p->name();
 }
-
+*/

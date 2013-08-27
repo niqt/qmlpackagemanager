@@ -62,25 +62,25 @@ public slots:
     void installMarkedPackages(bool simulate, bool onlyTrusted);
 
 private slots:
-    void onPackage(QSharedPointer<PackageKit::Package> packagePtr);
-    void onInstalledPackage(QSharedPointer<PackageKit::Package> packagePtr);
+    void onPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
+    void onInstalledPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
     void onUpdateAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
-    void onAvailablePackage(QSharedPointer<PackageKit::Package> packagePtr);
+    void onAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
     void onFinished(PackageKit::Enum::Exit,uint);
 
     void onChanged();
     void onCategory(const QString &parent_id, const QString &cat_id, const QString &name, const QString &summary, const QString &icon);
-    void onErrorCode(PackageKit::Enum::Error error, const QString& details);
-    void onEulaRequired(const PackageKit::Client::EulaInfo &info);
-    void onMediaChangeRequired(PackageKit::Enum::MediaType type, const QString& id, const QString& text);
-    void onFiles(const QSharedPointer<PackageKit::Package> &package, const QStringList &filenames);
-    void onMessage(PackageKit::Enum::Message type, const QString &message);
+    void onErrorCode(uint error, const QString &details);
+    //void onEulaRequired(const PackageKit::Client::EulaInfo &info);
+    //void onMediaChangeRequired(PackageKit::Enum::MediaType type, const QString& id, const QString& text);
+    //void onFiles(const QSharedPointer<PackageKit::Package> &package, const QStringList &filenames);
+    void onMessage(uint type, const QString &message);
     void onRepoDetail(const QString& repoId, const QString& description, bool enabled);
-    void onRepoSignatureRequired(const PackageKit::Client::SignatureInfo &info);
-    void onRequireRestart(PackageKit::Enum::Restart type, const QSharedPointer<PackageKit::Package> &package);
+    void onRepoSignatureRequired(const QString &pid, const QString &repoName, const QString &keyUrl, const QString &keyUserid, const QString &keyId, const QString &keyFingerprint, const QString &keyTimestamp, uint type);
+    //void onRequireRestart(PackageKit::Enum::Restart type, const QSharedPointer<PackageKit::Package> &package);
 
-    void onRefreshCacheFinished(PackageKit::Enum::Exit,uint);
-    void onRefreshReposFinished(PackageKit::Enum::Exit,uint);
+    void onRefreshCacheFinished(PackageKit::Transaction::Exit status, uint runtime);
+    void onRefreshReposFinished(PackageKit::Enum::Exit status, uint runtime);
 
 private:
     bool testNetworkConnection(TransactionWrapper *tw);
