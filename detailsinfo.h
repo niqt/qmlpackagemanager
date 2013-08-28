@@ -2,7 +2,7 @@
 #define DETAILSINFO_H
 
 #include <QObject>
-
+#include "transaction.h"
 
 
 class DetailsInfo
@@ -28,7 +28,7 @@ public:
     /**
          * Returns the package's group (for example Multimedia, Editors...)
          */
-    Enum::Group group() const;
+    PackageKit::Transaction::Group group() const;
 
     /**
          * Returns the package's long description
@@ -48,7 +48,7 @@ public:
 private:
     QSharedPointer<PackageInfo> m_package;
     QString m_license;
-    Enum::Group m_group;
+    PackageKit::Transaction::Group m_group;
     QString m_description;
     QString m_url;
     uint m_size;

@@ -27,6 +27,7 @@
 #include <QObject>
 #include "packageinfo.h"
 #include "detailsinfo.h"
+#include "updatedetails.h"
 
 class Package : public QObject
 {
@@ -55,7 +56,7 @@ public:
     PackageInfo *updateBasicInfo() const;
     DetailsInfo *details() const;
     DetailsInfo *updateDetails() const;
-    PackageKit::Client::UpdateInfo *updateInfo() const;
+    UpdateDetails *updateInfo() const;
 
     bool isUpdateAvailable();
 
@@ -81,8 +82,8 @@ public slots:
 private slots:
     void setPackageDetails(QSharedPointer<DetailsInfo> packagePtr);
     void setUpdateDetails(QSharedPointer<DetailsInfo> packagePtr);
-    void setUpdateInfo(PackageKit::Client::UpdateInfo info);
-    void onFinished(PackageKit::Enum::Exit, uint);
+    void setUpdateInfo(const QString &packageID, const QStringList &updates, const QStringList &obsoletes, const QStringList &vendorUrls, const QStringList &bugzillaUrls, const QStringList &cveUrls, PackageKit::Transaction::Restart restart, const QString &updateText, const QString &changelog, PackageKit::Transaction::UpdateState state, const QDateTime &issued, const QDateTime &updated);
+    void onFinished(PackageKit::Transaction::Exit status, uint runtime);
 
 private:
     QString m_name;
@@ -92,7 +93,7 @@ private:
     QSharedPointer<DetailsInfo> m_detailsPackage;
     QSharedPointer<PackageInfo> m_updatePackage;
     QSharedPointer<DetailsInfo> m_updateDetailsPackage;
-    PackageKit::Client::UpdateInfo *m_updateInfo;
+    UpdateDetails *m_updateInfo;
 
     PackageKit::Transaction *m_basicDetailsTransaction;
     PackageKit::Transaction *m_updateDetailsTransaction;

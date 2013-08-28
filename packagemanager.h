@@ -35,6 +35,7 @@
 #include <QStringList>
 
 #include <QQmlContext>
+#include <QQuickView>
 #include <QSortFilterProxyModel>
 
 class FilterPackageModel;
@@ -66,7 +67,7 @@ private slots:
     void onInstalledPackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
     void onUpdateAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
     void onAvailablePackage(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary);
-    void onFinished(PackageKit::Enum::Exit,uint);
+    void onFinished(PackageKit::Transaction::Exit status);
 
     void onChanged();
     void onCategory(const QString &parent_id, const QString &cat_id, const QString &name, const QString &summary, const QString &icon);
@@ -80,7 +81,7 @@ private slots:
     //void onRequireRestart(PackageKit::Enum::Restart type, const QSharedPointer<PackageKit::Package> &package);
 
     void onRefreshCacheFinished(PackageKit::Transaction::Exit status, uint runtime);
-    void onRefreshReposFinished(PackageKit::Enum::Exit status, uint runtime);
+    void onRefreshReposFinished(PackageKit::Transaction::Exit status, uint runtime);
 
 private:
     bool testNetworkConnection(TransactionWrapper *tw);
@@ -90,8 +91,8 @@ private:
 
     PackManContext m_packManContext;
 
-    QmlApplicationViewer *m_viewer;
-    PackageKit::Client *m_packageKit;
+    QQuickView *m_viewer;
+    //PackageKit::Client *m_packageKit;
 
     PackageKit::Transaction *m_refreshCacheTransaction;
     PackageKit::Transaction *m_refreshReposTransaction;
@@ -99,7 +100,7 @@ private:
     PackageKit::Transaction *m_getUpdatesTransaction;
     PackageKit::Transaction *m_searchGroupsTransaction;
 
-    QDeclarativeContext *m_qmlContext;
+    QQmlContext *m_qmlContext;
 
     PackageModel *m_installedPackagesModel;
     PackageModel *m_availablePackagesModel;

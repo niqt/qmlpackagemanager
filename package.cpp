@@ -137,7 +137,7 @@ DetailsInfo *Package::updateDetails() const
     }
 }
 
-PackageKit::Client::UpdateInfo *Package::updateInfo() const
+UpdateDetails *Package::updateInfo() const
 {
     return m_updateInfo;
 }
@@ -168,14 +168,25 @@ void Package::setUpdateDetails(QSharedPointer<DetailsInfo> packagePtr)
     emit changed();
 }
 
-void Package::setUpdateInfo(PackageKit::Client::UpdateInfo info)
+void Package::setUpdateInfo(const QString &packageID,
+                            const QStringList &updates,
+                            const QStringList &obsoletes,
+                            const QStringList &vendorUrls,
+                            const QStringList &bugzillaUrls,
+                            const QStringList &cveUrls,
+                            PackageKit::Transaction::Restart restart,
+                            const QString &updateText,
+                            const QString &changelog,
+                            PackageKit::Transaction::UpdateState state,
+                            const QDateTime &issued,
+                            const QDateTime &updated)
 {
 //    qDebug() << Q_FUNC_INFO << m_name;
     if (m_updateInfo)
         delete m_updateInfo;
 
-    m_updateInfo = new PackageKit::Client::UpdateInfo();
-    memcpy(m_updateInfo, &info, sizeof(info));
+    m_updateInfo = new UpdateDetails(packageID, updates, obsoletes, vendorUrls, bugzillaUrls,
+                                     cveUrls, restart, updateText, changelog, state, issued, updated);
 
     emit changed();
 }
@@ -221,10 +232,32 @@ void Package::fetchUpdateInfo()
 
     m_updateInfoTransaction = new PackageKit::Transaction(0, this);
 
-    connect(m_updateInfoTransaction, SIGNAL(updateDetail(PackageKit::Client::UpdateInfo)),
-            this, SLOT(setUpdateInfo(PackageKit::Client::UpdateInfo)));
-    connect(m_updateInfoTransaction, SIGNAL(finished(PackageKit::Enum::Exit,uint)),
-            this, SLOT(onFinished(PackageKit::Enum::Exit,uint)));
+    connect(m_updateInfoTransaction, SIGNAL(updateDetail(const QString &packageID,
+                                                         const QStringList &updates,
+                                                         const QStringList &obsoletes,
+                                                         const QStringList &vendorUrls,
+                                                         const QStringList &bugzillaUrls,
+                                                         const QStringList &cveUrls,
+                                                         PackageKit::Transaction::Restart restart,
+                                                         const QString &updateText,
+                                                         const QString &changelog,
+                                                         PackageKit::Transaction::UpdateState state,
+                                                         const QDateTime &issued,
+                                                         const QDateTime &updated)),
+            this, SLOT(setUpdateInfo(const QString &packageID,
+                                     const QStringList &updates,
+                                     const QStringList &obsoletes,
+                                     const QStringList &vendorUrls,
+                                     const QStringList &bugzillaUrls,
+                                     const QStringList &cveUrls,
+                                     PackageKit::Transaction::Restart restart,
+                                     const QString &updateText,
+                                     const QString &changelog,
+                                     PackageKit::Transaction::UpdateState state,
+                                     const QDateTime &issued,
+                                     const QDateTime &updated)));
+    connect(m_updateInfoTransaction, SIGNAL(finished(PackageKit::Transaction::Exit status, uint runtime)),
+            this, SLOT(onFinished(PackageKit::Transaction::Exit status, uint runtime)));
     m_updateInfoTransaction->getUpdateDetail(m_updatePackage);
 }
 

@@ -30,7 +30,7 @@ QString DetailsInfo::license() const
     return m_license;
 }
 
-Enum::Group DetailsInfo::group() const
+PackageKit::Transaction::Group DetailsInfo::group() const
 {
 
     return m_group;

@@ -234,7 +234,7 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
 
 }
 
-void PackageModel::addPackage(QSharedPointer<PackageKit::Package> packagePtr, bool isUpdatePackage)
+void PackageModel::addPackage(QSharedPointer<PackageInfo> packagePtr, bool isUpdatePackage)
 {
     // qDebug() << Q_FUNC_INFO << isUpdatePackage;
 
@@ -275,7 +275,7 @@ void PackageModel::clear()
     emit countChanged();
 }
 
-Package *PackageModel::findPackage(QSharedPointer<PackageKit::Package> packagePtr)
+Package *PackageModel::findPackage(QSharedPointer<PackageInfo> packagePtr)
 {
     PackageKit::Package *p1 = packagePtr.data();
     QString name1 = p1? p1->name(): QString();

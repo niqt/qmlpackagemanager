@@ -47,7 +47,8 @@ SOURCES += main.cpp \
     repository.cpp \
     networktest.cpp \
     packageinfo.cpp \
-    detailsinfo.cpp
+    detailsinfo.cpp \
+    updatedetails.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 #include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -67,5 +68,6 @@ HEADERS += \
     repository.h \
     networktest.h \
     packageinfo.h \
-    detailsinfo.h
+    detailsinfo.h \
+    updatedetails.h
 
