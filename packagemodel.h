@@ -41,6 +41,7 @@ class PackageModel : public QAbstractListModel
     Q_PROPERTY(int count READ rowCount NOTIFY countChanged)
     Q_PROPERTY(int markedCount READ markedCount NOTIFY markedCountChanged)
 
+    void setRoleNames(QHash<int, QByteArray> roles);
 public:
 
     enum PackageRoles {
@@ -143,6 +144,7 @@ private:
     QList<Package*> m_packageBuffer;
     PackageMarkings m_packageMarkings;
     QTimer m_addTimer;
+    QHash<int, QByteArray> m_roles;
 };
 
 #endif // PACKAGEMODEL_H

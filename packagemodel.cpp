@@ -31,6 +31,11 @@
 
 // ------------------------------------------------------------
 
+void PackageModel::setRoleNames(QHash<int, QByteArray> roles)
+{
+    m_roles = roles;
+}
+
 PackageModel::PackageModel(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -112,15 +117,15 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
     if (role == PackageObjectRole)
         return qVariantFromValue(object);
 
-    PackageKit::Package *data = package->basicInfo();
-    PackageKit::Package *updateData = package->updateBasicInfo();
-    PackageKit::Package::Details *details = package->details();
-    PackageKit::Package::Details *updateDetails = package->updateDetails();
+    PackageInfo *data = package->basicInfo();
+    PackageInfo *updateData = package->updateBasicInfo();
+    DetailsInfo *details = package->details();
+    DetailsInfo *updateDetails = package->updateDetails();
 
     if (!data)
         return QVariant("");
 
-    PackageKit::Client::UpdateInfo *updateInfo = package->updateInfo();
+    UpdateDetails *updateInfo = package->updateInfo();
 
     int group = (role & DetailMask);
     switch (group) {

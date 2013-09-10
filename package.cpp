@@ -25,9 +25,9 @@
 
 #include "packagemanager.h"
 
-#include <QPackageKit>
 
-Package::Package(QSharedPointer<PackageKit::Package> packagePtr, bool isUpdatePackage, QObject *parent) :
+
+Package::Package(QSharedPointer<PackageInfo> packagePtr, bool isUpdatePackage, QObject *parent) :
     QObject(parent),
     m_mark(false),
     m_updateInfo(0),

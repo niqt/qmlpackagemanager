@@ -43,7 +43,7 @@ public:
     enum Marking { NoOperation = 0, Install = 1, Update = 2, Uninstall = 4 };
         Q_DECLARE_FLAGS(Markings, Marking)
 
-    explicit Package(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary, bool isUpdatePackage = false, QObject *parent = 0);
+    explicit Package(QSharedPointer<PackageInfo> packagePtr, bool isUpdatePackage = false, QObject *parent = 0);
 
     QString displayName() const;
     QString filterName() const;
