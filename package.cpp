@@ -37,10 +37,10 @@ Package::Package(QSharedPointer<PackageInfo> packagePtr, bool isUpdatePackage, Q
 {
     if (isUpdatePackage) {
         m_updatePackage = packagePtr;
-        m_name = PAckageKit::Transaction::packageName(m_updatePackage->id());
+        m_name = PackageKit::Transaction::packageName(m_updatePackage->id());
     } else {
         m_package = packagePtr;
-        m_name = basicInfo()->name();
+        m_name = PackageKit::Transaction::packageName(basicInfo()->id());
     }
 }
 
@@ -69,17 +69,17 @@ QString Package::name() const
 
 QString Package::version() const
 {
-    return basicInfo()->version();
+    PackageKit::Transaction::packageVersion(basicInfo()->id());
 }
 
 
 QString Package::displayName() const
 {
-    QSharedPointer<PackageKit::Package> package = this->package();
+    QSharedPointer<PackageInfo> package = this->package();
     if (package.isNull())
         return m_name;
     else
-        return (*package).summary();
+        return package.data()->summary();
 }
 
 QString Package::filterName() const

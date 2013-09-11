@@ -35,6 +35,7 @@
 #include <QDebug>
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QApplication>
 
 
 #include "package.h"

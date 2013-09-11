@@ -163,19 +163,19 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
     case UpdateIdRole:
         return updateData? QVariant(updateData->id()): QVariant("");
     case UpdateNameRole:
-        return updateData? QVariant(updateData->name()): QVariant("");
+        return updateData? QVariant(PackageKit::Transaction::packageName(updateData->id())): QVariant("");
     case UpdateVersionRole:
-        return updateData? QVariant(updateData->version()): QVariant("");
+        return updateData? QVariant(PackageKit::Transaction::packageVersion(updateData->id())): QVariant("");
     case UpdateArchRole:
-        return updateData? QVariant(updateData->arch()): QVariant("");
+        return updateData? QVariant(PackageKit::Transaction::packageArch(updateData->id())): QVariant("");
     case UpdateDataRole:
-        return updateData? QVariant(updateData->data()): QVariant("");
+        return updateData? QVariant(PackageKit::Transaction::packageData(updateData->id())): QVariant("");
     case UpdateSummaryRole:
         return updateData? QVariant(updateData->summary()): QVariant("");
     case UpdateInfoRole:
         return updateData? QVariant(updateData->info()): QVariant("");
     case UpdateIconRole:
-        return updateData? QVariant(updateData->iconPath()): QVariant("");
+        return updateData? QVariant(PackageKit::Transaction::packageIcon(updateData->id())): QVariant("");
 
     case DetailsLicenseRole:
         return details? QVariant(details->license()): QVariant("");
