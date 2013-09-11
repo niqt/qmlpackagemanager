@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "transaction.h"
+#include <QString>
 
 class PackageInfo : public QObject
 {
@@ -10,6 +11,9 @@ class PackageInfo : public QObject
 public:
     explicit PackageInfo(PackageKit::Transaction::Info info, const QString &packageID, const QString &summary, QObject *parent = 0);
     PackageInfo() {;}
+    QString id();
+    QString summary();
+    PackageKit::Transaction::Info info();
 signals:
     
 public slots:

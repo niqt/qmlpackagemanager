@@ -117,12 +117,12 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
     if (role == PackageObjectRole)
         return qVariantFromValue(object);
 
-    PackageInfo *data = package->basicInfo();
+    QSharedPointer <PackageInfo> data =  package->package();
     PackageInfo *updateData = package->updateBasicInfo();
     DetailsInfo *details = package->details();
     DetailsInfo *updateDetails = package->updateDetails();
 
-    if (!data)
+    if (data.isNull())
         return QVariant("");
 
     UpdateDetails *updateInfo = package->updateInfo();
@@ -149,13 +149,13 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
     case IsMarkedRole:      return QVariant(package->isMarked());
 
     case IdRole:        return data->id();
-    case NameRole:      return data->name();
-    case VersionRole:   return data->version();
-    case ArchRole:      return data->arch();
-    case DataRole:      return data->data();
-    case SummaryRole:   return data->summary();
-    case InfoRole:      return data->info();
-    case IconRole:      return data->iconPath();
+    case NameRole:      return PackageKit::Transaction::packageName(data.data()->id());
+    case VersionRole:   return PackageKit::Transaction::packageVersion(data.data()->id());
+    case ArchRole:      return PackageKit::Transaction::packageArch(data.data()->id());
+    case DataRole:      return PackageKit::Transaction::packageData(data.data()->id());
+    case SummaryRole:   return data.data()->summary();
+    case InfoRole:      return data.data()->info();
+    case IconRole:      return PackageKit::Transaction::packageIcon(data.data()->id());
 
     case IsUpdateAvailableRole:
         return package->isUpdateAvailable();

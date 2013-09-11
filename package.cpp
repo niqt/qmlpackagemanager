@@ -37,7 +37,7 @@ Package::Package(QSharedPointer<PackageInfo> packagePtr, bool isUpdatePackage, Q
 {
     if (isUpdatePackage) {
         m_updatePackage = packagePtr;
-        m_name = updateBasicInfo()->name();
+        m_name = PAckageKit::Transaction::packageName(m_updatePackage->id());
     } else {
         m_package = packagePtr;
         m_name = basicInfo()->name();
